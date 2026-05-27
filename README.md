@@ -28,7 +28,7 @@ To handle structured operational tasks natively, the system enforces a strict `t
 
 ## 📂 Project Structure
 
-```text
+``` text
 enterprise-ai-agent/
 ├── chroma_db_storage/         # Local ChromaDB persistent vector storage directory (Auto-generated)
 ├── venv/                      # Python local virtual environment
@@ -39,3 +39,72 @@ enterprise-ai-agent/
 ├── guarded_agent.py           # Secures execution via an AST token parsing safety interceptor
 ├── multi_agent_system.py      # Establishes a state-driven Writer-Auditor review collaboration loop
 └── README.md                  # System architectural blueprint
+```
+
+## 🛡️ Security Posture & Guardrails
+
+To prevent both **AI Prompt Injection** and malicious **SQL Injection** attacks, the pipeline deploys a strict, automated defensive barrier via `sqlparse`:
+
+* **Mutation Blocking:** Automatically throws runtime exceptions and blocks execution if destructive mutation keywords (`DROP`, `DELETE`, `UPDATE`, `ALTER`, `TRUNCATE`) are present within the generated code block.
+* **Context Boundary Enforcement:** Statically extracts statement token identifiers to verify that the query references *only* the specific database tables retrieved by the vector context layer, actively stopping model access to system configuration or parallel tables.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+* Python 3.10 or higher
+* [Ollama](https://ollama.com/) installed and running locally
+
+### Installation & Setup
+
+1. **Enter the Workspace Directory:**
+```bash
+cd enterprise-ai-agent
+
+```
+
+2. **Activate Your Virtual Environment:**
+```bash
+source venv/bin/activate
+# On Windows use: venv\Scripts\activate
+
+```
+
+3. **Pull the Local LLM Core Engine:**
+```bash
+ollama pull llama3.2
+```
+4. **Seed the Local ChromaDB Vector Database:**
+```bash
+python setup_vector_db.py
+```
+5. **Test and Run the Pipeline Modules:**
+
+* Run the basic context retrieval agent:
+```bash
+python agent.py
+```
+
+* Test the runtime self-healing error correction loop:
+``` bash
+python self_correcting_agent.py
+```
+
+* Test the static AST security token interceptor:
+```bash
+python guarded_agent.py
+```
+
+* Run the full multi-agent developer-auditor consensus network:
+```bash
+python multi_agent_system.py
+```
+
+## 🛠️ Core Technologies
+* **Orchestration:** LangChain, LangChain-Ollama
+* **Local LLM Engine:** Ollama (Llama 3.2)
+* **Vector Database:** ChromaDB
+* **Data Validation:** Pydantic v2
+* **Security & AST Parsing:** SQLParse
+* **Local Compute Engine:** SQLite3
