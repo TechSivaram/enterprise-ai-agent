@@ -64,10 +64,15 @@ cd enterprise-ai-agent
 
 ```
 
-2. **Activate Your Virtual Environment:**
+2. **Initialize the Virtual Environment: Activate Your Virtual Environment: Install Dependencies:**
 ```bash
+python3 -m venv venv or python -m venv venv
 source venv/bin/activate
+
 # On Windows use: venv\Scripts\activate
+
+pip install --upgrade pip
+pip install -r requirements.txt
 
 ```
 
