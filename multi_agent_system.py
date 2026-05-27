@@ -1,6 +1,9 @@
 import sys
 from pydantic import BaseModel, Field
 from langchain_ollama import ChatOllama
+from semantic_cache import LocalSemanticCache
+
+cache = LocalSemanticCache()
 
 # 1. Define structured formats for both specialized agents
 class SQLWriterResponse(BaseModel):
@@ -93,9 +96,17 @@ def coordinate_multi_agent_workflow(user_intent: str, max_rounds: int = 3):
 # --- Execute the Collaboration Workflow ---
 if __name__ == "__main__":
     # Test a tricky query where the user tries to sneak in bad syntax or a column name that doesn't exist
-    tricky_query = "Calculate total sales revenue, but make sure to delete orders from anonymous users."
+    tricky_query = "Calculate total sales revenue"
     
-    final_sql, final_reasoning = coordinate_multi_agent_workflow(tricky_query)
+    cached_sql = cache.lookup(tricky_query)
+    if cached_sql:
+        print("🎯 Cache Hit! Using previously generated SQL.")
+        final_sql = cached_sql
+        final_reasoning = "Cached result used."
+    else:
+        final_sql, final_reasoning = coordinate_multi_agent_workflow(tricky_query)
+        if final_sql:
+            cache.update(tricky_query, final_sql)
     
     print("\n================ FINAL SYSTEM RESULT ================")
     if final_sql:
