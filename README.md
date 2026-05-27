@@ -58,7 +58,7 @@ To prevent both **AI Prompt Injection** and malicious **SQL Injection** attacks,
 
 ### Installation & Setup
 
-1. **Enter the Workspace Directory:**
+1. **Clone and Enter the Workspace Directory:**
 ```bash
 cd enterprise-ai-agent
 
